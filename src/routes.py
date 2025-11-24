@@ -1,6 +1,7 @@
 # Definição dos Endpoints (Blueprints)
 from flask import Blueprint, request, jsonify
 from . import models
+import requests
 
 # Criamos um Blueprint para organizar as rotas de usuários
 # Isso é escalável, poderíamos ter 'products_bp', 'orders_bp', etc.
@@ -44,3 +45,25 @@ def get_user(user_id):
         return jsonify(user), 200
     else:
         return jsonify({"error": "Usuário não encontrado"}), 404
+
+
+#adicionando rota externa
+exchange_bp = Blueprint('exchange', __name__)
+
+@exchange_bp.route('/exchange/usd-to-brl', methods=['GET'])
+def usd_to_brl():
+    url = "https://economia.awesomeapi.com.br/json/last/USD-BRL"
+
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return jsonify({"error": "Erro ao consultar API externa"}), 502
+
+    data = response.json()
+    price = data["USDBRL"]["bid"]
+
+    return jsonify({
+        "from": "USD",
+        "to": "BRL",
+        "rate": price
+    })       
