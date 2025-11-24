@@ -14,9 +14,6 @@ def create_app():
     # 2. Registrar Blueprints (rotas)
     from . import routes
     app.register_blueprint(routes.users_bp)
-
-    from src.routes import exchange_bp
-    app.register_blueprint(exchange_bp)
     
     # 3. (Opcional) Adicionar uma rota raiz simples
     @app.route('/')
